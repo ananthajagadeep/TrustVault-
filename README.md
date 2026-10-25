@@ -30,20 +30,28 @@ Python 3.10+ recommended. PowerShell activation is optional; invoke the environm
 ```powershell
 py -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r requirements.txt
+
+$env:TRUSTVAULT_ADMIN_PASSWORD = "Choose-A-Strong-Admin-Password"
+$env:TRUSTVAULT_OWNER_PASSWORD = "Choose-A-Strong-Owner-Password"
+$env:TRUSTVAULT_VIEWER_PASSWORD = "Choose-A-Strong-Viewer-Password"
+
 .\.venv\Scripts\python.exe seed.py
 .\.venv\Scripts\python.exe app.py
 ```
 
 Open `http://127.0.0.1:5000`.
 
-### Local demo credentials
+### Local demo accounts
 
-Seed script defaults (local development only; existing accounts are not overwritten):
-- Admin: `admin@trustvault.local` / `TV_Admin_ChangeMe_2026!`
-- Owner: `owner@trustvault.local` / `TV_Owner_ChangeMe_2026!`
-- Viewer: `viewer@trustvault.local` / `TV_Viewer_ChangeMe_2026!`
+The seed script creates these local demo accounts using the passwords you set in the environment variables above:
 
-Never deploy these default credentials. For a non-local environment, set unique environment variables before running `seed.py`:
+- Admin: `admin@trustvault.local`
+- Owner: `owner@trustvault.local`
+- Viewer: `viewer@trustvault.local`
+
+Existing accounts are not overwritten when the seed script runs again. Keep your passwords private, and never use demo credentials in a public deployment.
+
+For a non-local environment, set unique values for:
 - `TRUSTVAULT_ADMIN_PASSWORD`
 - `TRUSTVAULT_OWNER_PASSWORD`
 - `TRUSTVAULT_VIEWER_PASSWORD`
