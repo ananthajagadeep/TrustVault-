@@ -1,0 +1,159 @@
+
+{% extends "base.html" %}
+{% block title %}Workspace | TrustVault{% endblock %}
+
+{% block content %}
+<section class="dashboard-heading">
+  <div>
+    <div class="eyebrow">YOUR WORKSPACE</div>
+    <h1>Welcome, {{ current_user.name }}.</h1>
+    <p class="muted">Your role is <strong>{{ current_user.role }}</strong>. Access to document content is checked on the server.</p>
+  </div>
+  <a class="btn secondary" href="{{ url_for('search_documents') }}">Search documents ↗</a>
+</section>
+
+{% if current_user.role in ('owner', 'admin') %}
+<section class="upload-panel">
+  <div>
+    <h2>Upload a document</h2>
+    <p class="muted small">16 MB max · PDF, PNG/JPG, TXT, DOCX, XLSX</p>
+  </div>
+  <form action="{{ url_for('upload') }}" method="post" enctype="multipart/form-data" class="upload-form">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <input name="title" placeholder="Document title (optional)" maxlength="160">
+    <input name="category" placeholder="Category (e.g. Contract)" maxlength="80">
+    <input type="file" name="document" required accept=".pdf,.png,.jpg,.jpeg,.txt,.docx,.xlsx">
+    <button class="btn primary" type="submit">Upload ↑</button>
+  </form>
+</section>
+{% endif %}
+
+<section class="document-section">
+  <div class="section-title">
+    <div>
+      <h2>Your documents</h2>
+      <p class="muted small">Documents you own.</p>
+    </div>
+    <span class="count">{{ documents|length }} files</span>
+  </div>
+
+  {% if documents %}
+  <div class="document-list">
+    {% for doc in documents %}
+    <article class="document-item">
+      <div class="file-icon large">📄</div>
+      <div class="document-main">
+        <strong>{{ doc.title }}</strong>
+        <small>{{ doc.original_name }} · {{ doc.category }} · {{ (doc.size_bytes / 1024)|round(1) }} KB</small>
+      </div>
+      <a class="small-link" href="{{ url_for('download_document', document_id=doc.id) }}">Download ↓</a>
+
+      <div class="row-actions">
+        <a class="small-link" href="{{ url_for('permissions', document_id=doc.id) }}">Manage access</a>
+        <form method="post" action="{{ url_for('delete_document', document_id=doc.id) }}" onsubmit="return confirm('Soft-delete this document?');">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <button class="danger-link" type="submit">Delete</button>
+        </form>
+      </div>
+
+      <form class="edit-form" method="post" action="{{ url_for('edit_document', document_id=doc.id) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <input name="title" value="{{ doc.title }}" required maxlength="160" aria-label="Document title">
+        <input name="category" value="{{ doc.category }}" required maxlength="80" aria-label="Category">
+        <button class="btn secondary compact" type="submit">Save details</button>
+      </form>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div>📂</div>
+    <h3>No documents yet</h3>
+    <p>Upload your first document to see it here.</p>
+  </div>
+  {% endif %}
+</section>
+
+<section class="document-section">
+  <div class="section-title">
+    <div>
+      <h2>Shared with me</h2>
+      <p class="muted small">Only documents explicitly granted to your account appear here.</p>
+    </div>
+    <span class="count">{{ shared_documents|length }} files</span>
+  </div>
+
+  {% if shared_documents %}
+  <div class="document-list">
+    {% for doc in shared_documents %}
+    <article class="document-item">
+      <div class="file-icon large">🔗</div>
+      <div class="document-main">
+        <strong>{{ doc.title }}</strong>
+        <small>{{ doc.original_name }} · {{ doc.category }} · Owner: {{ doc.owner_name }} · Permission: {{ doc.permission }}</small>
+      </div>
+      <a class="small-link" href="{{ url_for('download_document', document_id=doc.id) }}">Download ↓</a>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div>🤝</div>
+    <h3>Nothing shared with you yet</h3>
+    <p>Ask a document owner to grant access to your registered email.</p>
+  </div>
+  {% endif %}
+</section>
+
+{% if current_user.role in ('owner', 'admin') %}
+<section class="document-section security-activity">
+  <div class="section-title">
+    <div>
+      <h2>Blocked access attempts</h2>
+      <p class="muted small">Attempts to open, download, edit, delete, or change permissions on your documents without authorization.</p>
+    </div>
+    <span class="count">{{ denied_attempts|length }} events</span>
+  </div>
+
+  {% if denied_attempts %}
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Time (UTC)</th>
+          <th>Action</th>
+          <th>Document</th>
+          <th>Account</th>
+          <th>Outcome / request details</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for event in denied_attempts %}
+        <tr>
+          <td>{{ event.happened_at }}</td>
+          <td>{{ event.action }}</td>
+          <td>{{ event.document_title or ('Document #' ~ event.document_id) }}</td>
+          <td>{{ event.actor_email or 'Unauthenticated / unknown' }}</td>
+          <td>
+            <span class="pill denied">Blocked</span><br>
+            <code>{{ event.detail_json }}</code>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+  {% else %}
+  <div class="empty-state">
+    <div>🛡️</div>
+    <h3>No blocked document-access attempts recorded</h3>
+    <p>When someone tries to access your documents without permission, the attempt will appear here.</p>
+  </div>
+  {% endif %}
+
+  <p class="muted small">
+    Failed sign-ins are recorded in the audit log but cannot automatically be attributed to a particular document owner unless the attempt involves a specific document.
+  </p>
+</section>
+{% endif %}
+{% endblock %}

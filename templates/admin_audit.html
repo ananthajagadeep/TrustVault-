@@ -1,0 +1,6 @@
+{% extends "base.html" %}{% block title %}Audit trail | TrustVault{% endblock %}
+{% block content %}<section class="content-wrap"><div class="eyebrow">ADMINISTRATION</div><h1>Audit trail</h1><p class="muted">Latest 500 events, including denied attempts. Admin can review metadata but does not automatically gain access to document contents.</p>
+<div class="audit-actions"><a class="btn secondary" href="{{ url_for('verify_audit') }}">Verify hash chain</a><a class="btn secondary" href="{{ url_for('admin_users') }}">View users</a></div>
+<div class="table-wrap"><table><thead><tr><th>Time (UTC)</th><th>Actor</th><th>Action</th><th>Document</th><th>Outcome</th><th>Details</th><th>Hash</th></tr></thead><tbody>
+{% for e in events %}<tr><td>{{ e.happened_at }}</td><td>{{ e.actor_email or ('user #' ~ e.actor_id if e.actor_id else 'anonymous') }}</td><td>{{ e.action }}</td><td>{{ e.document_id or '—' }}</td><td><span class="pill {{ e.outcome }}">{{ e.outcome }}</span></td><td><code>{{ e.detail_json }}</code></td><td><code>{{ e.event_hash[:12] }}…</code></td></tr>{% endfor %}
+</tbody></table></div></section>{% endblock %}

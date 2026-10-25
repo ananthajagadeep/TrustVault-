@@ -1,0 +1,11 @@
+{% extends "base.html" %}{% block title %}Create account | TrustVault{% endblock %}
+{% block content %}<section class="auth-wrap"><div class="auth-card">
+<div class="auth-symbol">🔐</div><div class="eyebrow">JOIN TRUSTVAULT</div><h1>Create an account</h1><p class="muted">Public registration can create an owner or viewer account. Admin is seeded separately.</p>
+<form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label>Full name<input name="name" required maxlength="100" autocomplete="name" placeholder="Your name"></label>
+<label>Email address<input name="email" type="email" required maxlength="254" autocomplete="email" placeholder="you@example.com"></label>
+<label>Password<input name="password" type="password" required minlength="10" autocomplete="new-password" placeholder="At least 10 characters"></label>
+<label>Role<select name="role"><option value="owner">Document owner</option><option value="viewer">Viewer</option></select></label>
+<button class="btn primary full" type="submit">Create account →</button></form>
+<p class="auth-bottom">Already registered? <a href="{{ url_for('login') }}">Log in</a></p>
+</div></section>{% endblock %}

@@ -1,0 +1,27 @@
+{% extends "base.html" %}{% block title %}TrustVault | Secure Document Sharing{% endblock %}
+{% block content %}
+<section class="hero">
+ <div class="hero-copy">
+  <div class="badge">DOCUMENT ACCESS · ACCOUNTABILITY · CONTROL</div>
+  <h1>Every document.<br>Every permission.<br><span>Every access recorded.</span></h1>
+  <p>TrustVault helps teams share confidential documents with named people, revoke access, and review an audit trail of successful and refused actions.</p>
+  <div class="actions"><a class="btn primary" href="{{ url_for('register') }}">Get started →</a><a class="btn secondary" href="{{ url_for('login') }}">Log in</a></div>
+  <div class="trust-note">◈ Server-side authorization · Per-document grants · Hash-chained audit events</div>
+ </div>
+ <div class="visual"><div class="glow"></div><div class="vault-card">
+  <div class="vault-top"><div class="icon-box">🔐</div><span class="status">● Access controlled</span></div>
+  <h3>Confidential document</h3><p class="muted small">Access is checked on each request.</p>
+  <div class="file-row"><div class="file-icon">📄</div><div class="file-info"><strong>Contract.pdf</strong><small>Owner: Example Owner</small></div><span class="check">✓</span></div>
+  <div class="file-row"><div class="file-icon">🛡️</div><div class="file-info"><strong>Named recipient</strong><small>Permission: Read</small></div><span class="check">✓</span></div>
+  <div class="file-row"><div class="file-icon">🧾</div><div class="file-info"><strong>Audit event</strong><small>Download recorded</small></div><span class="check">✓</span></div>
+  <p class="preview-note">Illustrative preview. Security claims depend on deployment and configuration.</p>
+ </div></div>
+</section>
+<section class="features" id="features">
+ <div class="section-heading"><div class="eyebrow">DESIGNED AROUND THE THREAT MODEL</div><h2>Access should be deliberate. Evidence should be reviewable.</h2></div>
+ <div class="feature-grid">
+  <article class="feature"><div class="feature-icon">🛡️</div><h3>Per-document permissions</h3><p>Owners grant named users read or edit access. Every protected route checks current permission server-side.</p></article>
+  <article class="feature"><div class="feature-icon">🧾</div><h3>Audit trail</h3><p>Successful actions and denied access attempts are recorded in a hash-chained event log.</p></article>
+  <article class="feature"><div class="feature-icon">↩️</div><h3>Immediate revocation</h3><p>No public file URLs are issued. Each download checks the current grant, so revocation applies to future requests.</p></article>
+ </div>
+</section>{% endblock %}

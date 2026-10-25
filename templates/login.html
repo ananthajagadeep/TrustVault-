@@ -1,0 +1,9 @@
+{% extends "base.html" %}{% block title %}Log in | TrustVault{% endblock %}
+{% block content %}<section class="auth-wrap"><div class="auth-card">
+<div class="auth-symbol">🔐</div><div class="eyebrow">WELCOME BACK</div><h1>Log in to TrustVault</h1><p class="muted">Open your workspace or review activity if you are an administrator.</p>
+<form method="post" class="form-stack"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+<label>Email address<input name="email" type="email" required autocomplete="username" placeholder="you@example.com"></label>
+<label>Password<input name="password" type="password" required autocomplete="current-password" placeholder="Your password"></label>
+<button class="btn primary full" type="submit">Log in →</button></form>
+<p class="auth-bottom">New to TrustVault? <a href="{{ url_for('register') }}">Create an account</a></p>
+</div></section>{% endblock %}

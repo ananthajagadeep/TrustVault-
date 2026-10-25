@@ -1,0 +1,4 @@
+{% extends "base.html" %}{% block title %}Audit verification | TrustVault{% endblock %}
+{% block content %}<section class="content-wrap"><div class="eyebrow">AUDIT INTEGRITY CHECK</div><h1>Hash-chain verification</h1><p>Checked {{ total }} event(s).</p>
+{% if errors %}<div class="flash error">Integrity mismatch at event IDs: {{ errors|join(', ') }}</div>{% else %}<div class="flash success">No hash-chain mismatch detected in the checked events.</div>{% endif %}
+<p class="muted">This detects accidental or partial modification. It cannot prove tamper resistance if an attacker can rewrite the database and recompute every hash. Production requires an external append-only destination or signed checkpoints.</p><a href="{{ url_for('admin_audit') }}">← Back to audit trail</a></section>{% endblock %}
